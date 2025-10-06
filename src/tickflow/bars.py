@@ -51,3 +51,46 @@ def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
     idx = pd.to_datetime(trades[TIME])
     buckets = idx.dt.floor(freq)
     return _aggregate(trades, buckets)
+
+
+def _threshold_groups(cumulative: np.ndarray, threshold: float) -> np.ndarray:
+    """Assign a bar id to each row, closing a bar once ``cumulative`` crosses a
+    multiple of ``threshold``.
+
+    The running total resets at each close so bars hold roughly ``threshold``
+    units of the driving quantity (ticks, volume, or dollars).
+    """
+    if threshold <= 0:
+        raise ValueError("threshold must be positive")
+    groups = np.empty(cumulative.size, dtype=np.int64)
+    bar = 0
+    running = 0.0
+    for i, value in enumerate(cumulative):
+        running += value
+        groups[i] = bar
+        if running >= threshold:
+            bar += 1
+            running = 0.0
+    return groups
+
+
+def tick_bars(trades: pd.DataFrame, n_ticks: int) -> pd.DataFrame:
+    """Sample a new bar every ``n_ticks`` trades."""
+    require_columns(trades, (TIME, PRICE, SIZE))
+    groups = _threshold_groups(np.ones(len(trades)), float(n_ticks))
+    return _aggregate(trades, pd.Series(groups, index=trades.index))
+
+
+def volume_bars(trades: pd.DataFrame, volume: float) -> pd.DataFrame:
+    """Sample a new bar once cumulative traded ``size`` reaches ``volume``."""
+    require_columns(trades, (TIME, PRICE, SIZE))
+    groups = _threshold_groups(trades[SIZE].to_numpy(dtype=float), float(volume))
+    return _aggregate(trades, pd.Series(groups, index=trades.index))
+
+
+def dollar_bars(trades: pd.DataFrame, dollars: float) -> pd.DataFrame:
+    """Sample a new bar once cumulative ``price * size`` reaches ``dollars``."""
+    require_columns(trades, (TIME, PRICE, SIZE))
+    notional = (trades[PRICE] * trades[SIZE]).to_numpy(dtype=float)
+    groups = _threshold_groups(notional, float(dollars))
+    return _aggregate(trades, pd.Series(groups, index=trades.index))
