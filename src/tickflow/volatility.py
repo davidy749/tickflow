@@ -61,3 +61,49 @@ def bipower_variation(prices: object) -> float:
 def jump_variation(prices: object) -> float:
     """Non-negative jump component, ``max(RV - BV, 0)``."""
     return max(realized_variance(prices) - bipower_variation(prices), 0.0)
+
+
+def _subsampled_rv(log_prices: np.ndarray, step: int) -> float:
+    """Average realized variance over the ``step`` slow grids of a given scale."""
+    totals = [
+        np.sum(np.diff(log_prices[start::step]) ** 2) for start in range(step)
+    ]
+    return float(np.mean(totals))
+
+
+def two_scale_rv(prices: object, slow_step: int = 5) -> float:
+    """Two-scale realized variance (Zhang, Mykland & Aït-Sahalia, 2005).
+
+    Combines a slow-grid average with a noise correction from the full (fast)
+    grid to produce a consistent estimator under i.i.d. microstructure noise.
+    """
+    prices = as_float_array(prices, "prices")
+    require_min_length(prices, slow_step + 2, "two_scale_rv")
+    if slow_step < 2:
+        raise ValueError("slow_step must be >= 2")
+    lp = np.log(prices)
+    n = lp.size - 1
+    rv_slow = _subsampled_rv(lp, slow_step)
+    rv_fast = float(np.sum(np.diff(lp) ** 2))
+    n_bar = (n - slow_step + 1) / slow_step
+    return float(rv_slow - (n_bar / n) * rv_fast)
+
+
+def realized_kernel(prices: object, bandwidth: int = 1) -> float:
+    """Flat-top Bartlett realized kernel (Barndorff-Nielsen et al., 2008).
+
+    Adds autocovariance terms up to ``bandwidth`` lags with Bartlett weights to
+    cancel the bias from serially correlated microstructure noise.
+    """
+    prices = as_float_array(prices, "prices")
+    require_min_length(prices, bandwidth + 2, "realized_kernel")
+    if bandwidth < 0:
+        raise ValueError("bandwidth must be non-negative")
+    r = log_returns(prices)
+    gamma0 = float(np.sum(r**2))
+    total = gamma0
+    for h in range(1, bandwidth + 1):
+        weight = 1.0 - h / (bandwidth + 1)
+        gamma_h = float(np.sum(r[h:] * r[:-h]))
+        total += 2.0 * weight * gamma_h
+    return total
