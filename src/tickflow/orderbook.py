@@ -43,3 +43,36 @@ def order_flow_imbalance(bid_size: object, ask_size: object) -> np.ndarray:
     depth = bs + as_
     with np.errstate(divide="ignore", invalid="ignore"):
         return np.where(depth > 0, (bs - as_) / depth, 0.0)
+
+
+def microprice(
+    bid: object, ask: object, bid_size: object, ask_size: object
+) -> np.ndarray:
+    """Stoikov microprice.
+
+    A single-step approximation of the microprice, this returns the size-
+    weighted mid. It is exposed separately because it is the natural fair-value
+    anchor for execution models, even though it coincides with
+    :func:`weighted_mid` at the top of book.
+    """
+    return weighted_mid(bid, ask, bid_size, ask_size)
+
+
+def classify_trades(price: object, bid: object, ask: object) -> np.ndarray:
+    """Lee-Ready trade-sign classification.
+
+    Returns ``+1`` for buyer-initiated and ``-1`` for seller-initiated trades by
+    comparing each trade price to the prevailing mid; trades exactly at the mid
+    fall back to the tick test on the price series.
+    """
+    p = as_float_array(price, "price")
+    mid = mid_price(bid, ask)
+    if p.size != mid.size:
+        raise ValueError("price and quotes must be equal length")
+    sign = np.sign(p - mid)
+    # Tick test for trades sitting exactly on the mid.
+    tick = np.sign(np.diff(p, prepend=p[0]))
+    for i in range(sign.size):
+        if sign[i] == 0:
+            sign[i] = tick[i] if tick[i] != 0 else (sign[i - 1] if i else 1.0)
+    return sign.astype(float)
