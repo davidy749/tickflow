@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 import numpy as np
 
 from ._validation import as_float_array
@@ -11,7 +13,7 @@ def mid_price(bid: object, ask: object) -> np.ndarray:
     """Simple arithmetic mid, ``(bid + ask) / 2``."""
     b = as_float_array(bid, "bid")
     a = as_float_array(ask, "ask")
-    return (b + a) / 2.0
+    return cast(np.ndarray, (b + a) / 2.0)
 
 
 def weighted_mid(
@@ -29,7 +31,7 @@ def weighted_mid(
     depth = bs + as_
     with np.errstate(divide="ignore", invalid="ignore"):
         imbalance = np.where(depth > 0, bs / depth, 0.5)
-    return imbalance * a + (1.0 - imbalance) * b
+    return cast(np.ndarray, imbalance * a + (1.0 - imbalance) * b)
 
 
 def order_flow_imbalance(bid_size: object, ask_size: object) -> np.ndarray:
@@ -75,4 +77,4 @@ def classify_trades(price: object, bid: object, ask: object) -> np.ndarray:
     for i in range(sign.size):
         if sign[i] == 0:
             sign[i] = tick[i] if tick[i] != 0 else (sign[i - 1] if i else 1.0)
-    return sign.astype(float)
+    return cast(np.ndarray, sign.astype(float))
