@@ -24,6 +24,9 @@ dev = [
     "mypy>=1.6",
 ]
 
+[project.scripts]
+tickflow = "tickflow.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/davidy749/tickflow"
 Issues = "https://github.com/davidy749/tickflow/issues"
