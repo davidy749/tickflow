@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._constants import MU1
 from ._validation import as_float_array, log_returns, require_min_length
 from .types import JumpTestResult
-
-# E[|Z|] for a standard normal, used to scale the local bipower volatility.
-_MU1 = np.sqrt(2.0 / np.pi)
 
 
 def _local_volatility(returns: np.ndarray, window: int) -> np.ndarray:
@@ -16,7 +14,7 @@ def _local_volatility(returns: np.ndarray, window: int) -> np.ndarray:
     abs_prod = np.abs(returns[1:] * returns[:-1])
     bpv = np.full(returns.size, np.nan)
     for i in range(window, returns.size):
-        bpv[i] = np.sqrt(np.mean(abs_prod[i - window : i]) / _MU1**2)
+        bpv[i] = np.sqrt(np.mean(abs_prod[i - window : i]) / MU1**2)
     return bpv
 
 
@@ -35,9 +33,9 @@ def lee_mykland_jumps(
     sigma = _local_volatility(r, window)
 
     n = np.sum(~np.isnan(sigma))
-    c = (2.0 * np.log(n)) ** 0.5 / _MU1
-    s_n = 1.0 / (c * _MU1)
-    beta = c - (np.log(np.pi) + np.log(np.log(n))) / (2.0 * c * _MU1)
+    c = (2.0 * np.log(n)) ** 0.5 / MU1
+    s_n = 1.0 / (c * MU1)
+    beta = c - (np.log(np.pi) + np.log(np.log(n))) / (2.0 * c * MU1)
     threshold = -np.log(-np.log(1.0 - alpha)) * s_n + beta
 
     results: list[JumpTestResult] = []

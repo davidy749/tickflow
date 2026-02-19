@@ -10,6 +10,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from ._constants import MU1
 from ._validation import as_float_array, log_returns, require_min_length
 
 
@@ -41,10 +42,6 @@ def realized_volatility(prices: object, annualize: float | None = None) -> float
     return vol
 
 
-# mu1 = E[|Z|] for a standard normal; the bipower scaling constant is mu1**-2.
-_MU1 = np.sqrt(2.0 / np.pi)
-
-
 def bipower_variation(prices: object) -> float:
     """Realized bipower variation (Barndorff-Nielsen & Shephard, 2004).
 
@@ -56,7 +53,7 @@ def bipower_variation(prices: object) -> float:
     prices = as_float_array(prices, "prices")
     require_min_length(prices, 3, "bipower_variation")
     r = np.abs(log_returns(prices))
-    return float(_MU1**-2 * np.sum(r[1:] * r[:-1]))
+    return float(MU1**-2 * np.sum(r[1:] * r[:-1]))
 
 
 def jump_variation(prices: object) -> float:
