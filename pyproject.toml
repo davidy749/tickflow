@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tickflow"
-version = "0.0.0"
+version = "0.1.0"
 description = "Tools for analysing high-frequency financial time series"
 readme = "README.md"
 requires-python = ">=3.10"
