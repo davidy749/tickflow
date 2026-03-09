@@ -42,6 +42,20 @@ def realized_volatility(prices: object, annualize: float | None = None) -> float
     return vol
 
 
+def realized_semivariance(prices: object) -> tuple[float, float]:
+    """Downside and upside realized semivariance (Barndorff-Nielsen et al., 2010).
+
+    Splits realized variance by the sign of each return. Returns
+    ``(downside, upside)``; the two sum to :func:`realized_variance`.
+    """
+    prices = as_float_array(prices, "prices")
+    require_min_length(prices, 2, "realized_semivariance")
+    r = log_returns(prices)
+    downside = float(np.sum(r[r < 0] ** 2))
+    upside = float(np.sum(r[r > 0] ** 2))
+    return downside, upside
+
+
 def bipower_variation(prices: object) -> float:
     """Realized bipower variation (Barndorff-Nielsen & Shephard, 2004).
 
