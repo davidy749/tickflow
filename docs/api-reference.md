@@ -28,7 +28,15 @@ All names below are importable directly from `tickflow`.
 | `jump_variation(prices)` | `float` | `max(RV - BV, 0)` |
 | `two_scale_rv(prices, slow_step=5)` | `float` | noise-corrected |
 | `realized_kernel(prices, bandwidth=1)` | `float` | Bartlett kernel |
+| `realized_semivariance(prices)` | `(float, float)` | `(downside, upside)` |
 | `har_features(daily_rv, weekly=5, monthly=22)` | `DataFrame` | HAR regressors |
+
+## range volatility
+
+| Function | Returns | Notes |
+| --- | --- | --- |
+| `parkinson(high, low)` | `float` | high/low range estimator |
+| `garman_klass(open, high, low, close)` | `float` | full-OHLC estimator |
 
 ## microstructure
 
