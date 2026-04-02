@@ -24,6 +24,47 @@ def roll_spread(prices: object) -> SpreadEstimate:
     return SpreadEstimate(value=spread, n_obs=dp.size - 1)
 
 
+def quoted_spread(bid: object, ask: object, relative: bool = True) -> float:
+    """Mean quoted spread ``ask - bid``.
+
+    With ``relative=True`` (default) the spread is divided by the mid, giving a
+    fraction-of-price figure that is comparable across instruments.
+    """
+    b = as_float_array(bid, "bid")
+    a = as_float_array(ask, "ask")
+    if b.size != a.size:
+        raise ValueError("bid and ask must be equal length")
+    require_min_length(b, 1, "quoted_spread")
+    spread = a - b
+    if relative:
+        spread = 2.0 * spread / (a + b)
+    return float(np.mean(spread))
+
+
+def corwin_schultz(high: object, low: object) -> float:
+    """Corwin-Schultz (2012) high-low bid-ask spread estimator.
+
+    Recovers the spread from the ratio of two-day to one-day high-low ranges,
+    which separates the volatility and spread contributions. Negative estimates
+    (a sign of low volatility relative to the spread) are floored at zero.
+    """
+    h = as_float_array(high, "high")
+    low_ = as_float_array(low, "low")
+    if h.size != low_.size:
+        raise ValueError("high and low must be equal length")
+    require_min_length(h, 2, "corwin_schultz")
+
+    beta = np.log(h[:-1] / low_[:-1]) ** 2 + np.log(h[1:] / low_[1:]) ** 2
+    h2 = np.maximum(h[:-1], h[1:])
+    l2 = np.minimum(low_[:-1], low_[1:])
+    gamma = np.log(h2 / l2) ** 2
+
+    const = 3.0 - 2.0 * np.sqrt(2.0)
+    alpha = (np.sqrt(2.0 * beta) - np.sqrt(beta)) / const - np.sqrt(gamma / const)
+    spread = 2.0 * (np.exp(alpha) - 1.0) / (1.0 + np.exp(alpha))
+    return float(np.mean(np.maximum(spread, 0.0)))
+
+
 def amihud_illiquidity(prices: object, volumes: object) -> float:
     """Amihud (2002) illiquidity: mean of ``|return| / dollar volume``.
 
