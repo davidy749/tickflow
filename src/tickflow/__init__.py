@@ -23,7 +23,7 @@ from .orderbook import (
     order_flow_imbalance,
     weighted_mid,
 )
-from .range_vol import garman_klass, parkinson
+from .range_volatility import garman_klass, parkinson
 from .resample import align_prices, previous_tick
 from .volatility import (
     bipower_variation,
