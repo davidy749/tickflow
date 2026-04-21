@@ -41,7 +41,11 @@ def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
     """
     require_columns(trades, (TIME, PRICE, SIZE))
     idx = pd.to_datetime(trades[TIME])
-    buckets = idx.dt.floor(freq)
+    # Sort by time so the open/close of each bar reflect chronological order
+    # even when the caller passes unsorted trades.
+    order = idx.argsort(kind="stable")
+    trades = trades.iloc[order]
+    buckets = idx.iloc[order].dt.floor(freq)
     return _aggregate(trades, buckets)
 
 
