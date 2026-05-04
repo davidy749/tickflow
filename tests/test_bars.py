@@ -24,3 +24,12 @@ def test_volume_bars_respect_threshold(trades):
 def test_dollar_bars_total_preserved(trades):
     bars = dollar_bars(trades, dollars=1_000_000)
     assert bars["n_trades"].sum() == len(trades)
+
+
+def test_time_bars_handle_unsorted_input(trades):
+    shuffled = trades.sample(frac=1.0, random_state=1).reset_index(drop=True)
+    a = time_bars(trades, "1min").reset_index(drop=True)
+    b = time_bars(shuffled, "1min").reset_index(drop=True)
+    # open/close must match the chronological result regardless of input order
+    assert a["open"].tolist() == b["open"].tolist()
+    assert a["close"].tolist() == b["close"].tolist()
