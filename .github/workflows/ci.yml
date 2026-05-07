@@ -27,4 +27,4 @@ jobs:
       - name: Type check
         run: mypy src
       - name: Test
-        run: pytest --cov=tickflow --cov-report=xml
+        run: pytest --cov=tickflow --cov-report=xml --cov-fail-under=85
