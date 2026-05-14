@@ -1,7 +1,15 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from tickflow.cli import main
+
+
+def test_cli_version(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--version"])
+    assert exc.value.code == 0
+    assert "tickflow" in capsys.readouterr().out
 
 
 def test_cli_rv(tmp_path, capsys):
