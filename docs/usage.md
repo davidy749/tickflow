@@ -41,6 +41,15 @@ tf.two_scale_rv(prices, slow_step=5)
 ```python
 spread = tf.roll_spread(prices)        # SpreadEstimate(value=..., n_obs=...)
 tf.amihud_illiquidity(prices, volumes)
+tf.quoted_spread(bid, ask)             # relative quoted spread
+tf.corwin_schultz(high, low)           # spread from daily high/low
+```
+
+## Order-flow toxicity
+
+```python
+# buy/sell volume per equal-volume bucket
+tf.vpin(buy_volume, sell_volume, window=50)
 ```
 
 ## Command line
