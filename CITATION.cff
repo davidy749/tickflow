@@ -4,7 +4,7 @@ title: "tickflow: high-frequency financial time-series analysis in Python"
 authors:
   - family-names: Young
     given-names: David
-version: 0.2.0
+version: 0.3.0
 license: MIT
 repository-code: "https://github.com/davidy749/tickflow"
 keywords:
