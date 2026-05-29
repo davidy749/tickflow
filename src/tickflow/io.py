@@ -28,9 +28,7 @@ def _normalise(
     return out
 
 
-def read_trades(
-    frame: pd.DataFrame, rename: Mapping[str, str] | None = None
-) -> pd.DataFrame:
+def read_trades(frame: pd.DataFrame, rename: Mapping[str, str] | None = None) -> pd.DataFrame:
     """Normalise a trades frame to ``(timestamp, price, size)``.
 
     Parameters
@@ -44,9 +42,7 @@ def read_trades(
     return out.loc[:, list(TRADE_COLUMNS)]
 
 
-def read_quotes(
-    frame: pd.DataFrame, rename: Mapping[str, str] | None = None
-) -> pd.DataFrame:
+def read_quotes(frame: pd.DataFrame, rename: Mapping[str, str] | None = None) -> pd.DataFrame:
     """Normalise a quotes frame to ``(timestamp, bid, ask, bid_size, ask_size)``."""
     out = _normalise(frame, rename, QUOTE_COLUMNS)
     return out.loc[:, list(QUOTE_COLUMNS)]

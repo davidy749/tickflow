@@ -83,9 +83,7 @@ def amihud_illiquidity(prices: object, volumes: object) -> float:
     return float(np.mean(r[mask] / dollar_vol[mask]))
 
 
-def effective_spread(
-    trade_price: object, mid_price: object, side: object
-) -> float:
+def effective_spread(trade_price: object, mid_price: object, side: object) -> float:
     """Mean effective spread: ``2 * side * (trade_price - mid) / mid``.
 
     ``side`` is ``+1`` for buyer-initiated trades and ``-1`` for seller-

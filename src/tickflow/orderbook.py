@@ -16,9 +16,7 @@ def mid_price(bid: object, ask: object) -> np.ndarray:
     return cast(np.ndarray, (b + a) / 2.0)
 
 
-def weighted_mid(
-    bid: object, ask: object, bid_size: object, ask_size: object
-) -> np.ndarray:
+def weighted_mid(bid: object, ask: object, bid_size: object, ask_size: object) -> np.ndarray:
     """Size-weighted mid that leans toward the side with more depth.
 
     Imbalance ``I = bid_size / (bid_size + ask_size)`` weights the *ask* price,
@@ -47,9 +45,7 @@ def order_flow_imbalance(bid_size: object, ask_size: object) -> np.ndarray:
         return np.where(depth > 0, (bs - as_) / depth, 0.0)
 
 
-def microprice(
-    bid: object, ask: object, bid_size: object, ask_size: object
-) -> np.ndarray:
+def microprice(bid: object, ask: object, bid_size: object, ask_size: object) -> np.ndarray:
     """Stoikov microprice.
 
     A single-step approximation of the microprice, this returns the size-
