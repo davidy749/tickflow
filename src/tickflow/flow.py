@@ -28,4 +28,4 @@ def vpin(buy_volume: object, sell_volume: object, window: int = 50) -> FloatArra
         imbalance = np.where(total > 0, np.abs(buy - sell) / total, 0.0)
     csum = np.cumsum(imbalance)
     windowed = np.concatenate(([csum[window - 1]], csum[window:] - csum[:-window]))
-    return windowed / window
+    return np.asarray(windowed / window, dtype=np.float64)
