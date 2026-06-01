@@ -6,10 +6,10 @@ import numpy as np
 
 from ._constants import MU1
 from ._validation import as_float_array, log_returns, require_min_length
-from .types import JumpTestResult
+from .types import FloatArray, JumpTestResult
 
 
-def _local_volatility(returns: np.ndarray, window: int) -> np.ndarray:
+def _local_volatility(returns: FloatArray, window: int) -> FloatArray:
     """Rolling bipower estimate of instantaneous volatility (Lee & Mykland)."""
     abs_prod = np.abs(returns[1:] * returns[:-1])
     bpv = np.full(returns.size, np.nan)

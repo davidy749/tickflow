@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 from ._validation import require_columns
-from .types import PRICE, SIZE, TIME
+from .types import PRICE, SIZE, TIME, FloatArray, IntArray
 
 
 def _aggregate(frame: pd.DataFrame, group: pd.Series) -> pd.DataFrame:
@@ -49,7 +49,7 @@ def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
     return _aggregate(trades, buckets)
 
 
-def _threshold_groups(cumulative: np.ndarray, threshold: float) -> np.ndarray:
+def _threshold_groups(cumulative: FloatArray, threshold: float) -> IntArray:
     """Assign a bar id to each row, closing a bar once ``cumulative`` crosses a
     multiple of ``threshold``.
 

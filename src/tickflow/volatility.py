@@ -12,6 +12,7 @@ import pandas as pd
 
 from ._constants import MU1
 from ._validation import as_float_array, log_returns, require_min_length
+from .types import FloatArray
 
 
 def realized_variance(prices: object) -> float:
@@ -75,7 +76,7 @@ def jump_variation(prices: object) -> float:
     return max(realized_variance(prices) - bipower_variation(prices), 0.0)
 
 
-def _subsampled_rv(log_prices: np.ndarray, step: int) -> float:
+def _subsampled_rv(log_prices: FloatArray, step: int) -> float:
     """Average realized variance over the ``step`` slow grids of a given scale."""
     totals = [np.sum(np.diff(log_prices[start::step]) ** 2) for start in range(step)]
     return float(np.mean(totals))

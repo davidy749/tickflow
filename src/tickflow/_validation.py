@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from .exceptions import InsufficientDataError, SchemaError
+from .types import FloatArray
 
 
 def require_columns(frame: pd.DataFrame, columns: Iterable[str]) -> None:
@@ -21,7 +22,7 @@ def require_columns(frame: pd.DataFrame, columns: Iterable[str]) -> None:
         raise SchemaError(f"frame is missing required columns: {missing}")
 
 
-def as_float_array(values: object, name: str = "values") -> np.ndarray:
+def as_float_array(values: object, name: str = "values") -> FloatArray:
     """Coerce ``values`` to a 1-D float64 array, raising on ragged input."""
     arr = np.asarray(values, dtype=float)
     if arr.ndim != 1:
@@ -29,13 +30,13 @@ def as_float_array(values: object, name: str = "values") -> np.ndarray:
     return arr
 
 
-def require_min_length(arr: np.ndarray, minimum: int, what: str) -> None:
+def require_min_length(arr: FloatArray, minimum: int, what: str) -> None:
     """Raise :class:`InsufficientDataError` if ``arr`` is shorter than ``minimum``."""
     if arr.size < minimum:
         raise InsufficientDataError(f"{what} needs at least {minimum} observations, got {arr.size}")
 
 
-def log_returns(prices: np.ndarray) -> np.ndarray:
+def log_returns(prices: FloatArray) -> FloatArray:
     """Return log differences of a strictly positive price array."""
     if np.any(prices <= 0):
         raise SchemaError("prices must be strictly positive to take log returns")

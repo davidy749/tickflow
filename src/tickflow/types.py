@@ -4,6 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import numpy as np
+import numpy.typing as npt
+
+#: A 1-D array of float64, the common return type of the estimators.
+FloatArray = npt.NDArray[np.float64]
+#: A 1-D array of int64, used for bar-group labels.
+IntArray = npt.NDArray[np.int64]
+
 # Canonical column names used throughout the library. Loaders normalise incoming
 # data to these names so estimators never have to guess.
 TIME = "timestamp"

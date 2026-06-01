@@ -5,9 +5,10 @@ from __future__ import annotations
 import numpy as np
 
 from ._validation import as_float_array, require_min_length
+from .types import FloatArray
 
 
-def vpin(buy_volume: object, sell_volume: object, window: int = 50) -> np.ndarray:
+def vpin(buy_volume: object, sell_volume: object, window: int = 50) -> FloatArray:
     """Volume-synchronised probability of informed trading (Easley et al., 2012).
 
     Given per-bucket buy and sell volumes (use equal-volume buckets), VPIN is the
