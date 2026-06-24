@@ -8,6 +8,7 @@ Labys and the realized-kernel literature (Barndorff-Nielsen et al.).
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 
 from ._validation import as_float_array, log_returns, require_min_length
 
@@ -107,3 +108,22 @@ def realized_kernel(prices: object, bandwidth: int = 1) -> float:
         gamma_h = float(np.sum(r[h:] * r[:-h]))
         total += 2.0 * weight * gamma_h
     return total
+
+
+def har_features(daily_rv: object, weekly: int = 5, monthly: int = 22) -> pd.DataFrame:
+    """Build HAR-RV regressors from a series of daily realized variances.
+
+    Returns a frame with the lagged daily value and trailing weekly/monthly
+    averages used by the Heterogeneous AutoRegressive model (Corsi, 2009).
+    Rows without a full lookback are dropped.
+    """
+    rv = pd.Series(as_float_array(daily_rv, "daily_rv"))
+    feats = pd.DataFrame(
+        {
+            "rv_d": rv.shift(1),
+            "rv_w": rv.rolling(weekly).mean().shift(1),
+            "rv_m": rv.rolling(monthly).mean().shift(1),
+            "target": rv,
+        }
+    )
+    return feats.dropna().reset_index(drop=True)
