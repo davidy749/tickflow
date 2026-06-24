@@ -6,6 +6,7 @@ from tickflow import (
     har_features,
     jump_variation,
     realized_kernel,
+    realized_semivariance,
     realized_variance,
     realized_volatility,
     two_scale_rv,
@@ -47,6 +48,13 @@ def test_two_scale_and_kernel_run(rng):
 def test_insufficient_data():
     with pytest.raises(InsufficientDataError):
         realized_variance([100.0])
+
+
+def test_semivariance_sums_to_rv(rng):
+    prices = 100 * np.exp(np.cumsum(rng.normal(0, 0.001, 300)))
+    down, up = realized_semivariance(prices)
+    assert down >= 0 and up >= 0
+    assert down + up == pytest.approx(realized_variance(prices))
 
 
 def test_har_features_shape(rng):
