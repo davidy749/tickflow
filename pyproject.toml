@@ -15,5 +15,38 @@ dependencies = [
     "pandas>=1.5",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "hypothesis>=6.0",
+    "ruff>=0.4",
+    "mypy>=1.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/davidy749/tickflow"
+Issues = "https://github.com/davidy749/tickflow/issues"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/tickflow"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["tickflow"]
+branch = true
