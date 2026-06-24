@@ -57,6 +57,7 @@ print(tf.roll_spread(close))
 - [Architecture](docs/architecture.md)
 - [API reference](docs/api-reference.md)
 - [Design notes](docs/design-notes.md)
+- [References](docs/references.md)
 - Runnable [examples](examples/)
 
 ## License
