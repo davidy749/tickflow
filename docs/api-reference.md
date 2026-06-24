@@ -46,6 +46,14 @@ All names below are importable directly from `tickflow`.
 | `amihud_illiquidity(prices, volumes)` | `float` |
 | `effective_spread(trade_price, mid_price, side)` | `float` |
 | `kyle_lambda(signed_volume, price_change)` | `float` |
+| `quoted_spread(bid, ask, relative=True)` | `float` |
+| `corwin_schultz(high, low)` | `float` |
+
+## flow
+
+| Function | Returns |
+| --- | --- |
+| `vpin(buy_volume, sell_volume, window=50)` | `ndarray` |
 
 ## orderbook
 
