@@ -1,7 +1,14 @@
 import numpy as np
 import pytest
 
-from tickflow import amihud_illiquidity, effective_spread, kyle_lambda, roll_spread
+from tickflow import (
+    amihud_illiquidity,
+    corwin_schultz,
+    effective_spread,
+    kyle_lambda,
+    quoted_spread,
+    roll_spread,
+)
 
 
 def test_roll_spread_recovers_known_spread(rng):
@@ -37,3 +44,18 @@ def test_kyle_lambda_slope():
     flow = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
     dp = 0.5 * flow  # exact linear impact
     assert kyle_lambda(flow, dp) == pytest.approx(0.5)
+
+
+def test_quoted_spread_relative_and_absolute():
+    bid = np.array([99.0, 100.0])
+    ask = np.array([101.0, 102.0])
+    assert quoted_spread(bid, ask, relative=False) == pytest.approx(2.0)
+    # relative spread ~ 2 / mid
+    assert quoted_spread(bid, ask) == pytest.approx(np.mean([2 / 100, 2 / 101]))
+
+
+def test_corwin_schultz_non_negative(rng):
+    mid = 50 + np.cumsum(rng.normal(0, 0.05, 200))
+    high = mid + np.abs(rng.normal(0, 0.1, 200))
+    low = mid - np.abs(rng.normal(0, 0.1, 200))
+    assert corwin_schultz(high, low) >= 0.0
