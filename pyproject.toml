@@ -33,6 +33,7 @@ Issues = "https://github.com/davidy749/tickflow/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tickflow"]
+artifacts = ["src/tickflow/py.typed"]
 
 [tool.ruff]
 line-length = 100
