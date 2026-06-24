@@ -5,12 +5,15 @@ from __future__ import annotations
 from .bars import dollar_bars, tick_bars, time_bars, volume_bars
 from .exceptions import InsufficientDataError, SchemaError, TickflowError
 from .execution import implementation_shortfall, twap, vwap
+from .flow import vpin
 from .io import read_quotes, read_trades
 from .jumps import lee_mykland_jumps
 from .microstructure import (
     amihud_illiquidity,
+    corwin_schultz,
     effective_spread,
     kyle_lambda,
+    quoted_spread,
     roll_spread,
 )
 from .orderbook import (
@@ -69,6 +72,10 @@ __all__ = [
     "amihud_illiquidity",
     "effective_spread",
     "kyle_lambda",
+    "quoted_spread",
+    "corwin_schultz",
+    # order-flow toxicity
+    "vpin",
     # orderbook
     "mid_price",
     "weighted_mid",
