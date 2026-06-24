@@ -40,3 +40,38 @@ def amihud_illiquidity(prices: object, volumes: object) -> float:
     if not np.any(mask):
         raise ValueError("no positive dollar volume to compute illiquidity")
     return float(np.mean(r[mask] / dollar_vol[mask]))
+
+
+def effective_spread(
+    trade_price: object, mid_price: object, side: object
+) -> float:
+    """Mean effective spread: ``2 * side * (trade_price - mid) / mid``.
+
+    ``side`` is ``+1`` for buyer-initiated trades and ``-1`` for seller-
+    initiated. The result is a relative (fraction-of-price) spread.
+    """
+    p = as_float_array(trade_price, "trade_price")
+    mid = as_float_array(mid_price, "mid_price")
+    s = as_float_array(side, "side")
+    if not (p.size == mid.size == s.size):
+        raise ValueError("trade_price, mid_price and side must be equal length")
+    require_min_length(p, 1, "effective_spread")
+    return float(np.mean(2.0 * s * (p - mid) / mid))
+
+
+def kyle_lambda(signed_volume: object, price_change: object) -> float:
+    """Kyle's lambda: price impact per unit of signed order flow.
+
+    Estimated as the OLS slope of ``price_change`` on ``signed_volume``; larger
+    values indicate a less liquid, more impactful market.
+    """
+    x = as_float_array(signed_volume, "signed_volume")
+    y = as_float_array(price_change, "price_change")
+    if x.size != y.size:
+        raise ValueError("signed_volume and price_change must be equal length")
+    require_min_length(x, 2, "kyle_lambda")
+    var = float(np.var(x))
+    if var == 0:
+        raise ValueError("signed_volume has zero variance")
+    cov = float(np.cov(x, y, bias=True)[0, 1])
+    return cov / var
