@@ -20,12 +20,14 @@ from .orderbook import (
     order_flow_imbalance,
     weighted_mid,
 )
+from .range_vol import garman_klass, parkinson
 from .resample import align_prices, previous_tick
 from .volatility import (
     bipower_variation,
     har_features,
     jump_variation,
     realized_kernel,
+    realized_semivariance,
     realized_variance,
     realized_volatility,
     two_scale_rv,
@@ -57,7 +59,11 @@ __all__ = [
     "jump_variation",
     "two_scale_rv",
     "realized_kernel",
+    "realized_semivariance",
     "har_features",
+    # range-based volatility
+    "parkinson",
+    "garman_klass",
     # microstructure
     "roll_spread",
     "amihud_illiquidity",
