@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use tickflow in academic work, please cite it."
+title: "tickflow: high-frequency financial time-series analysis in Python"
+authors:
+  - family-names: Young
+    given-names: David
+version: 0.2.0
+license: MIT
+repository-code: "https://github.com/davidy749/tickflow"
+keywords:
+  - high-frequency
+  - realized-volatility
+  - market-microstructure
+  - econometrics
