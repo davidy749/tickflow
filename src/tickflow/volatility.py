@@ -38,3 +38,26 @@ def realized_volatility(prices: object, annualize: float | None = None) -> float
     if annualize is not None:
         vol *= float(np.sqrt(annualize))
     return vol
+
+
+# mu1 = E[|Z|] for a standard normal; the bipower scaling constant is mu1**-2.
+_MU1 = np.sqrt(2.0 / np.pi)
+
+
+def bipower_variation(prices: object) -> float:
+    """Realized bipower variation (Barndorff-Nielsen & Shephard, 2004).
+
+    Uses products of adjacent absolute returns, which stay finite across price
+    jumps. This makes it an estimator of the *continuous* part of quadratic
+    variation, so ``realized_variance - bipower_variation`` isolates the jump
+    contribution.
+    """
+    prices = as_float_array(prices, "prices")
+    require_min_length(prices, 3, "bipower_variation")
+    r = np.abs(log_returns(prices))
+    return float(_MU1**-2 * np.sum(r[1:] * r[:-1]))
+
+
+def jump_variation(prices: object) -> float:
+    """Non-negative jump component, ``max(RV - BV, 0)``."""
+    return max(realized_variance(prices) - bipower_variation(prices), 0.0)
