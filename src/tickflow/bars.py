@@ -14,14 +14,6 @@ import pandas as pd
 from ._validation import require_columns
 from .types import PRICE, SIZE, TIME
 
-_OHLCV = {
-    "open": (PRICE, "first"),
-    "high": (PRICE, "max"),
-    "low": (PRICE, "min"),
-    "close": (PRICE, "last"),
-    "volume": (SIZE, "sum"),
-}
-
 
 def _aggregate(frame: pd.DataFrame, group: pd.Series) -> pd.DataFrame:
     """Aggregate trades into OHLCV bars given a group label per row."""
