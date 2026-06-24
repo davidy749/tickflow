@@ -13,9 +13,7 @@ from ._validation import require_columns
 from .types import PRICE, TIME
 
 
-def previous_tick(
-    trades: pd.DataFrame, freq: str = "1s", price_col: str = PRICE
-) -> pd.Series:
+def previous_tick(trades: pd.DataFrame, freq: str = "1s", price_col: str = PRICE) -> pd.Series:
     """Sample the last price at or before each point of a regular grid.
 
     Returns a price :class:`~pandas.Series` indexed by the regular grid. Grid

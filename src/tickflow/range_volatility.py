@@ -28,9 +28,7 @@ def parkinson(high: object, low: object) -> float:
     return float(np.sqrt(np.mean(log_hl**2) / (4.0 * np.log(2.0))))
 
 
-def garman_klass(
-    open_: object, high: object, low: object, close: object
-) -> float:
+def garman_klass(open_: object, high: object, low: object, close: object) -> float:
     """Garman-Klass (1980) volatility from full OHLC bars.
 
     More efficient than Parkinson by also using the open-to-close move.

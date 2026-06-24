@@ -77,9 +77,7 @@ def jump_variation(prices: object) -> float:
 
 def _subsampled_rv(log_prices: np.ndarray, step: int) -> float:
     """Average realized variance over the ``step`` slow grids of a given scale."""
-    totals = [
-        np.sum(np.diff(log_prices[start::step]) ** 2) for start in range(step)
-    ]
+    totals = [np.sum(np.diff(log_prices[start::step]) ** 2) for start in range(step)]
     return float(np.mean(totals))
 
 

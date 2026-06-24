@@ -32,9 +32,7 @@ def as_float_array(values: object, name: str = "values") -> np.ndarray:
 def require_min_length(arr: np.ndarray, minimum: int, what: str) -> None:
     """Raise :class:`InsufficientDataError` if ``arr`` is shorter than ``minimum``."""
     if arr.size < minimum:
-        raise InsufficientDataError(
-            f"{what} needs at least {minimum} observations, got {arr.size}"
-        )
+        raise InsufficientDataError(f"{what} needs at least {minimum} observations, got {arr.size}")
 
 
 def log_returns(prices: np.ndarray) -> np.ndarray:
